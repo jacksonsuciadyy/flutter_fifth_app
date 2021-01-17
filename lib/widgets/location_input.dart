@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
 
 import '../helpers/location_helper.dart';
@@ -12,13 +13,23 @@ class LocationInput extends StatefulWidget {
 class _LocationInputState extends State<LocationInput> {
   String _previewImageUrl;
 
-  Future<void> _getCurrentUserLocation() async {
-    final locData = await Location().getLocation();
+  void _showPreview(double lat, double lng) {
     final staticMapImageUrl = LocationHelper.generateLocationPreviewImage(
-        latitude: locData.latitude, longitude: locData.longitude);
+      latitude: lat,
+      longitude: lng,
+    );
     setState(() {
       _previewImageUrl = staticMapImageUrl;
     });
+  }
+
+  Future<void> _getCurrentUserLocation() async {
+    try {
+      final locData = await Location().getLocation();
+      _showPreview(locData.latitude, locData.longitude);
+    } catch (error) {
+      return;
+    }
   }
 
   Future<void> _selectOnMap() async {
@@ -30,18 +41,16 @@ class _LocationInputState extends State<LocationInput> {
         ),
       ),
     );
-
-    if (selectedLocation == null)
+    if (selectedLocation == null) {
       return;
-    else {
-      //...
     }
+    _showPreview(selectedLocation.latitude, selectedLocation.longitude);
   }
 
   @override
   Widget build(BuildContext context) {
     return Column(
-      children: [
+      children: <Widget>[
         Container(
           height: 170,
           width: double.infinity,
@@ -62,21 +71,25 @@ class _LocationInputState extends State<LocationInput> {
         ),
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: [
+          children: <Widget>[
             FlatButton.icon(
-              onPressed: _getCurrentUserLocation,
-              icon: Icon(Icons.location_on),
-              label: Text('CurrentLocation'),
+              icon: Icon(
+                Icons.location_on,
+              ),
+              label: Text('Current Location'),
               textColor: Theme.of(context).primaryColor,
+              onPressed: _getCurrentUserLocation,
             ),
             FlatButton.icon(
-              onPressed: _selectOnMap,
-              icon: Icon(Icons.map),
+              icon: Icon(
+                Icons.map,
+              ),
               label: Text('Select on Map'),
               textColor: Theme.of(context).primaryColor,
-            )
+              onPressed: _selectOnMap,
+            ),
           ],
-        )
+        ),
       ],
     );
   }

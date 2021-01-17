@@ -7,10 +7,11 @@ class MapScreen extends StatefulWidget {
   final PlaceLocation initialLocation;
   final bool isSelecting;
 
-  MapScreen(
-      {this.initialLocation = const PlaceLocation(
-          latitude: 37.422, longitude: 37.422, address: null),
-      this.isSelecting = false});
+  MapScreen({
+    this.initialLocation =
+        const PlaceLocation(latitude: -6.1329685, longitude: 106.8377216),
+    this.isSelecting = false,
+  });
 
   @override
   _MapScreenState createState() => _MapScreenState();
@@ -27,9 +28,9 @@ class _MapScreenState extends State<MapScreen> {
         initialCameraPosition: CameraPosition(
           target: LatLng(
             widget.initialLocation.latitude,
-            widget.initialLocation.latitude,
+            widget.initialLocation.longitude,
           ),
-          zoom: 16,
+          zoom: 14.4746,
         ),
       ),
     );
